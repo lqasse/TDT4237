@@ -82,12 +82,17 @@ class PatentRepository
         $date           = $patent->getDate();
         $file           = $patent->getFile();
 
-        if ($patent->getPatentId() === null) {
-            $query = "INSERT INTO patent (company, date, title, description, file) "
-                . "VALUES ('$company', '$date', '$title', '$description', '$file')";
+        if ($file === null){
+          $file = "lslsls";
         }
 
-        $this->pdo->exec($query);
-        return $this->pdo->lastInsertId();
+        if ($patent->getPatentId() === null) {
+            $stmt = $this->pdo->prepare("INSERT INTO patent (company, date, title, description, file) "
+              . "VALUES (:company, :date, :title, :description, :file)");
+        }
+        $stmt->execute(['title' => $title, 'company' => $company, 'description' => $description, 'date' => $date, 'file' => $file]);
+
+
+        return  $this->pdo->lastInsertId();
     }
 }
