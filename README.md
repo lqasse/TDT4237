@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Linux command line 101
 
 When running through this tutorial, you'll be exposed for some special signs
@@ -50,6 +50,4 @@ database with the following commands:
 $ php composer.phar down
 $ php composer.phar up
 ```
-=======
-# TDT4237
->>>>>>> 137bab1c822a9015b4b8af905071bb606b80c9d4
+
