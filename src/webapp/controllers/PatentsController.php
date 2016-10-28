@@ -26,6 +26,19 @@ class PatentsController extends Controller
         $this->render('patents/index.twig', ['patent' => $patent, 'users' => $users]);
     }
 
+    public function search($query)
+    {
+
+      $patent = $this->patentRepository->search($query);
+      $username = $_SESSION['user'];
+      $user = $this->userRepository->findByUser($username);
+      $this->render('patents/search.twig', [
+          'patent' => $patent,
+          'user' => $user,
+          'query' => $query
+              ]);
+    }
+
     public function show($patentId)
     {
         $patent = $this->patentRepository->find($patentId);
@@ -44,8 +57,11 @@ class PatentsController extends Controller
             'user' => $user,
             'flash' => $variables
         ]);
-
     }
+
+
+
+
 
     public function newpatent()
     {
@@ -90,6 +106,8 @@ class PatentsController extends Controller
             $this->app->flashNow('error', join('<br>', $validation->getValidationErrors()));
             $this->app->render('patents/new.twig');
     }
+
+
 
     public function startUpload()
     {

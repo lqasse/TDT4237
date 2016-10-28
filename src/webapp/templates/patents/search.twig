@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>Patents</h2>
-    <input type="text"> </input><button> Search </button>
+    <input type="text" name="query" value="{{query | raw }}"></input><a href="/patents/search/"> Search </a>
     <table class="ui single line table">
         <thead>
             <tr>
@@ -25,11 +25,6 @@
         	</tr>
         	{% endfor %}
 
-            {% if patent is empty %}
-            <tr>
-                <td colspan="3">There are no patents registered yet!</td>
-            </tr>
-            {% endif %}
         </tbody>
     </table>
 {% endblock %}
