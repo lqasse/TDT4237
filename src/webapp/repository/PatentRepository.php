@@ -19,6 +19,11 @@ class PatentRepository
         $this->pdo = $pdo;
     }
 
+    private function removeSpecialChars($string){
+      $result = preg_replace('/[^A-Za-z0-9 !@#$%^&*().]/u','', strip_tags($string));
+      return $result;
+    }
+
     public function makePatentFromRow(array $row)
     {
         $patent = new Patent($row['patentId'], $row['company'], $row['title'], $row['description'], $row['date'], $row['file']);
@@ -76,9 +81,9 @@ class PatentRepository
 
     public function save(Patent $patent)
     {
-        $title          = $patent->getTitle();
-        $company        = $patent->getCompany();
-        $description    = $patent->getDescription();
+        $title          = $this -> removeSpecialChars($patent->getTitle());
+        $company        = $this -> removeSpecialChars($patent->getCompany());
+        $description    = $this -> removeSpecialChars($patent->getDescription());
         $date           = $patent->getDate();
         $file           = $patent->getFile();
 

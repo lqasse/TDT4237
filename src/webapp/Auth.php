@@ -90,6 +90,9 @@ class Auth
         if($this->guest()) {
             session_destroy();
         }
+        else if($this ->user()){
+          session_destroy();
+        }
     }
 
 }

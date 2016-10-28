@@ -20,6 +20,8 @@ class Patent
         $this->file = $file;
     }
 
+
+
     public function getPatentId() {
         return $this->patentId;
 

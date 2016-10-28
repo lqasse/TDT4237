@@ -32,6 +32,8 @@ class PatentValidation {
             $this->validationErrors[] = "Title needed";
         }
 
+        
+
         return $this->validationErrors;
     }
 
