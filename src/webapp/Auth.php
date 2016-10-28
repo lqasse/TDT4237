@@ -75,8 +75,11 @@ class Auth
      */
     public function isAdmin()
     {
-        if ($this->check()) {
-            return $_COOKIE['isadmin'] === 'yes';
+        if ($this->userRepository->findByUser($_SESSION['user'])->isAdmin()) {
+            return true;
+        }
+        else{
+            return false;
         }
 
         throw new Exception('Not logged in but called Auth::isAdmin() anyway');
