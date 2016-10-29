@@ -57,13 +57,14 @@ class UsersController extends Controller
         $request  = $this->app->request;
         $username = $request->post('user');
         $password = $request->post('pass');
+        $confirm_password = $request->post('confirm_pass');
         $firstName = $request->post('first_name');
         $lastName = $request->post('last_name');
         $phone = $request->post('phone');
         $company = $request->post('company');
 
 
-        $validation = new RegistrationFormValidation($username, $password, $firstName, $lastName, $phone, $company);
+        $validation = new RegistrationFormValidation($username, $password, $confirm_password, $firstName, $lastName, $phone, $company);
 
         if ($validation->isGoodToGo()) {
             $password = $password;
