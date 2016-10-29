@@ -12,7 +12,7 @@ class UserRepository
 {
     const INSERT_QUERY   = "INSERT INTO users(user, pass, first_name, last_name, phone, company, isadmin) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s')";
     const UPDATE_QUERY   = "UPDATE users SET email='%s', first_name='%s', last_name='%s', isadmin='%s', phone ='%s' , company ='%s' WHERE id='%s'";
-    const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";
+    const FIND_BY_NAME   = "SELECT * FROM users WHERE user=:username";
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
     const FIND_FULL_NAME   = "SELECT * FROM users WHERE user='%s'";
@@ -60,10 +60,12 @@ class UserRepository
 
     public function findByUser($username)
     {
-        $query  = sprintf(self::FIND_BY_NAME, $username);
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);
-        $row = $result->fetch();
-        
+
+        $query = $this->pdo->prepare(self::FIND_BY_NAME);
+        $query->execute(['username' => $username]);
+
+        $row = $query->fetch();
+
         if ($row === false) {
             return false;
         }
@@ -81,7 +83,7 @@ class UserRepository
     public function all()
     {
         $rows = $this->pdo->query(self::SELECT_ALL);
-        
+
         if ($rows === false) {
             return [];
             throw new \Exception('PDO error in all()');

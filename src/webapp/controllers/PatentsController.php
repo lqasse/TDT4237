@@ -26,18 +26,30 @@ class PatentsController extends Controller
         $this->render('patents/index.twig', ['patent' => $patent, 'users' => $users]);
     }
 
+    public function search($query)
+    {
+
+      $patent = $this->patentRepository->search($query);
+      $username = $_SESSION['user'];
+      $user = $this->userRepository->findByUser($username);
+      $this->render('patents/search.twig', [
+          'patent' => $patent,
+          'user' => $user,
+          'query' => $query
+              ]);
+    }
+
     public function show($patentId)
     {
         $patent = $this->patentRepository->find($patentId);
         $username = $_SESSION['user'];
         $user = $this->userRepository->findByUser($username);
         $request = $this->app->request;
-        $message = $request->get('msg');
+        $success = $request->get('success');
         $variables = [];
 
-        if($message) {
-            $variables['msg'] = $message;
-
+        if($success) {
+            $variables['msg'] = "Patent registered successfully";
         }
 
         $this->render('patents/show.twig', [
@@ -45,8 +57,11 @@ class PatentsController extends Controller
             'user' => $user,
             'flash' => $variables
         ]);
-
     }
+
+
+
+
 
     public function newpatent()
     {
@@ -84,13 +99,15 @@ class PatentsController extends Controller
                 $patent->setDate($date);
                 $patent->setFile($file);
                 $savedPatent = $this->patentRepository->save($patent);
-                $this->app->redirect('/patents/' . $savedPatent . '?msg="Patent succesfully registered');
+                $this->app->redirect('/patents/' . $savedPatent . '?success=true');
             }
         }
 
             $this->app->flashNow('error', join('<br>', $validation->getValidationErrors()));
             $this->app->render('patents/new.twig');
     }
+
+
 
     public function startUpload()
     {

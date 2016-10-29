@@ -37,6 +37,22 @@ class PatentRepository
         return $patent;
     }
 
+    public function search($query)
+    {
+
+        $formatted = "%" . $query ."%";
+        $stmt = $this->pdo->prepare("SELECT * FROM patent WHERE company LIKE :query OR title LIKE :query");
+        $stmt->execute(['query' => $formatted,'query' => $formatted]);
+        $fetch = $stmt->fetchAll();
+        if(count($fetch) == 0) {
+            return false;
+        }
+
+        return new PatentCollection(
+            array_map([$this, 'makePatentFromRow'], $fetch)
+        );
+    }
+
 
     public function find($patentId)
     {
