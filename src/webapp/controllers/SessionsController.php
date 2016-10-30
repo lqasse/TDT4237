@@ -2,7 +2,6 @@
 
 namespace tdt4237\webapp\controllers;
 
-use tdt4237\webapp\repository\UserRepository;
 
 class SessionsController extends Controller
 {
@@ -27,13 +26,14 @@ class SessionsController extends Controller
     public function create()
     {
         $request = $this->app->request;
-        $user    = $request->post('user');
-        $pass    = $request->post('pass');
+        $user = $request->post('user');
+        $pass = $request->post('pass');
+        $email = $request->post('email');
 
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
             setcookie("user", $user);
-            setcookie("password",  $pass);
+            setcookie("password", $pass);
             $isAdmin = $this->auth->user()->isAdmin();
 
             if ($isAdmin) {
@@ -47,13 +47,26 @@ class SessionsController extends Controller
             return;
         }
 
-        $this->app->flashNow('error', 'Incorrect user/pass combination.');
-        $this->render('sessions/new.twig', []);
+        if (isset($_POST['submit'])) {
+            $this->app->flashNow('error', 'Incorrect user/pass combination.');
+            $this->render('sessions/new.twig', []);
+        } else if (isset($_POST['reset'])) {
+            $this->render('sessions/reset.twig', []);
+        } else {
+            if (!empty($email)) {
+                $this->app->flashNow('info', 'We have sent an email to your address with instructions to reset your password');
+                $this->render('sessions/reset.twig', []);
+            } else {
+                $this->app->flashNow('error', 'Please enter you email address');
+                $this->render('sessions/reset.twig', []);
+            }
+        }
     }
+
 
     public function destroy()
     {
         $this->auth->logout();
-        $this->app->redirect('http://www.ntnu.no/');
+        $this->app->redirect('/');
     }
 }

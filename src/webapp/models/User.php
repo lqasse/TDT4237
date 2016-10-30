@@ -15,10 +15,11 @@ class User
     protected $email   = null;
     protected $isAdmin = 0;
 
-    function __construct($username, $hash, $firstName, $lastName, $phone, $company)
+    function __construct($username, $email, $hash, $firstName, $lastName, $phone, $company)
     {
         $this->username = $username;
         $this->hash = $hash;
+        $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->phone = $phone;
