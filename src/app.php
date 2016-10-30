@@ -70,6 +70,8 @@ $app->post('/profile/edit', $ns . 'UsersController:update');
 
 // Patents
 $app->get('/patents', $ns . 'PatentsController:index')->name('showpatents');
+$app->post('/patents', $ns . 'PatentsController:search');
+
 
 $app->get('/patents/new', $ns . 'PatentsController:newpatent')->name('registerpatent');
 $app->post('/patents/new', $ns . 'PatentsController:create');
@@ -78,8 +80,7 @@ $app->get('/patents/:patentId', $ns . 'PatentsController:show');
 
 $app->get('/patents/:patentId/delete', $ns . 'PatentsController:destroy');
 
-$app->get('/patents/search/:query', $ns . 'PatentsController:search');
-$app->get('/patents/search/', $ns . 'PatentsController:index');
+$app->post('/patents/search', $ns . 'PatentsController:search');
 
 // Admin restricted area
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');

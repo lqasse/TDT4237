@@ -26,9 +26,10 @@ class PatentsController extends Controller
         $this->render('patents/index.twig', ['patent' => $patent, 'users' => $users]);
     }
 
-    public function search($query)
+    public function search()
     {
-
+      $request  = $this->app->request;
+      $query = $request->post('query');
       $patent = $this->patentRepository->search($query);
       $username = $_SESSION['user'];
       $user = $this->userRepository->findByUser($username);

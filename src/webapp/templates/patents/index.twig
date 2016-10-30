@@ -2,7 +2,13 @@
 
 {% block content %}
     <h2>Patents</h2>
-    <input type="text"> </input><button> Search </button>
+    <form action="" method="post" class="ui form">
+        <div class="field">
+            <input type="text" name="query">
+        </div>
+
+        <input type="submit" name="submit" value="Search" class="positive ui button">
+    </form>
     <table class="ui single line table">
         <thead>
             <tr>
