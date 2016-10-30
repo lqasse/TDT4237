@@ -6,12 +6,11 @@ use tdt4237\webapp\repository\UserRepository;
 
 class SessionsController extends Controller
 {
-    private $pdo;
+    static $pdo;
 
     public function __construct()
     {
         parent::__construct();
-        $this->pdo = $pdo;
     }
 
     public function newSession()
@@ -30,15 +29,16 @@ class SessionsController extends Controller
     {   
         //HERE!
         $clientIp = $this->get_client_ip();
-        echo '<script>';
-        echo 'console.log("'.$clientIp.'linjafor")';
-        echo '</script>';
-        $q2 = 'SELECT COUNT (LoginId) FROM Logins WHERE ip = "'.$clientIp.'";';
-        $numberOfLogins = self::$pdo->query($q2);
-        echo '<script>';
-        echo 'console.log("antall innlogginger")';
-        echo 'console.log("'.$numberOfLogins.'")';
-        echo '</script>';
+        $q2 = 'SELECT COUNT (LoginId) log FROM Logins WHERE ip = "'.$clientIp.'" AND time > datetime("now","-5 minutes");';
+        $result = self::$pdo->query($q2);
+        $numberOfLogins = $result->fetchColumn();
+        if($numberOfLogins>=5){
+            $this->app->flashNow('error','You have been temporarily locked out of your account. Try again in a couple of minutes');
+            $this->render('sessions/new.twig', []);
+            return;
+        }
+
+        //To here
 
 
         $request = $this->app->request;
@@ -66,8 +66,8 @@ class SessionsController extends Controller
         $this->render('sessions/new.twig', []);
     }
 
+    //And here
     public function invalidLogin(){
-     //THIS IS WHERE
         $ipaddress = $this->get_client_ip();
         $q1 = 'INSERT INTO logins(ip) VALUES("'.$ipaddress.'");';
         self::$pdo->exec($q1);
@@ -91,9 +91,6 @@ class SessionsController extends Controller
             $ipaddress = $_SERVER['REMOTE_ADDR'];
         else
             $ipaddress = 'UNKNOWN';
-        echo '<script>';
-        echo 'console.log("'.$ipaddress.'")';
-        echo '</script>';
         return $ipaddress;
     }
 
