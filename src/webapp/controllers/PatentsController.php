@@ -3,7 +3,8 @@
 namespace tdt4237\webapp\controllers;
 
 use tdt4237\webapp\models\Patent;
-use tdt4237\webapp\controllers\UserController;
+use tdt4237\webapp\controllers\UsersController;
+use tdt4237\webapp\repository\UserRepository;
 use tdt4237\webapp\validation\PatentValidation;
 
 class PatentsController extends Controller
@@ -125,13 +126,17 @@ class PatentsController extends Controller
 
     public function destroy($patentId)
     {
-        if ($this->patentRepository->deleteByPatentid($patentId) === 1) {
-            $this->app->flash('info', "Sucessfully deleted '$patentId'");
-            $this->app->redirect('/admin');
-            return;
+        if($this->userRepository->findByUser($_SESSION['user'])->isAdmin()){
+            if ($this->patentRepository->deleteByPatentid($patentId) === 1){
+                $this->app->flash('info', "Sucessfully deleted '$patentId'");
+                $this->app->redirect('/admin');
+                return;
+            }
         }
+        else{
+            $this->app->flash('info', "An error ocurred. Unable to delete patent '$patentId'.");
+            $this->app->redirect('/admin');
 
-        $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
-        $this->app->redirect('/admin');
+        }
     }
 }
