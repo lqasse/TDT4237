@@ -32,11 +32,10 @@ class PatentsController extends Controller
       $request  = $this->app->request;
       $query = $request->post('query');
       $patent = $this->patentRepository->search($query);
-      $username = $_SESSION['user'];
-      $user = $this->userRepository->findByUser($username);
+      //$username = $_SESSION['user'];
+      //$user = $this->userRepository->findByUser($username);
       $this->render('patents/search.twig', [
           'patent' => $patent,
-          'user' => $user,
           'query' => $query
               ]);
     }
