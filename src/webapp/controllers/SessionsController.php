@@ -60,7 +60,6 @@ class SessionsController extends Controller
             $this->app->redirect('/');
             return;
         }
-
         if (isset($_POST['submit'])) {
             $this->invalidLogin();
             $this->app->flashNow('error', 'Incorrect user/pass combination.');
