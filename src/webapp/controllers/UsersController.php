@@ -7,6 +7,9 @@ use tdt4237\webapp\models\Email;
 use tdt4237\webapp\models\User;
 use tdt4237\webapp\validation\EditUserFormValidation;
 use tdt4237\webapp\validation\RegistrationFormValidation;
+use tdt4237\webapp\repository\UserRepository;
+
+
 
 class UsersController extends Controller
 {
@@ -123,18 +126,21 @@ class UsersController extends Controller
 
     public function destroy($username)
     {
-        if ($this->userRepository->deleteByUsername($username) === 1) {
-            $this->app->flash('info', "Sucessfully deleted '$username'");
-            $this->app->redirect('/admin');
-            return;
-        }
+        if(($this->userRepository->findByUser($_SESSION['user'])->isAdmin())){
+            if ($this->userRepository->deleteByUsername($username) === 1) {
+                $this->app->flash('info', "Sucessfully deleted '$username'");
+                $this->app->redirect('/admin');
+                return;
+            }
 
-        $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
-        $this->app->redirect('/admin');
+        }
+        else{
+            $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
+            $this->app->redirect('/admin');
+        }
     }
 
-    public function makeSureUserIsAuthenticated()
-    {
+    public function makeSureUserIsAuthenticated(){
         if ($this->auth->guest()) {
             $this->app->flash('info', 'You must be logged in to edit your profile.');
             $this->app->redirect('/login');
