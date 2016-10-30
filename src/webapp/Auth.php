@@ -46,7 +46,7 @@ class Auth
 
     public function getUsername() {
         if(isset($_SESSION['user'])){
-        return $_SESSION['user'];
+          return $_SESSION['user'];
         }
     }
 
@@ -64,7 +64,9 @@ class Auth
     public function user()
     {
         if ($this->check()) {
+          session_regenerate_id();
             return $this->userRepository->findByUser($_SESSION['user']);
+
         }
 
         throw new Exception('Not logged in but called Auth::user() anyway');
