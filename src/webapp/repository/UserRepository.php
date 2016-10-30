@@ -10,7 +10,7 @@ use tdt4237\webapp\models\User;
 
 class UserRepository
 {
-    const INSERT_QUERY   = "INSERT INTO users(user, pass, first_name, last_name, phone, company, isadmin) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s')";
+    const INSERT_QUERY   = "INSERT INTO users(user, pass, first_name, last_name, phone, email, company, isadmin) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s')";
     const UPDATE_QUERY   = "UPDATE users SET email='%s', first_name='%s', last_name='%s', isadmin='%s', phone ='%s' , company ='%s' WHERE id='%s'";
     const FIND_BY_NAME   = "SELECT * FROM users WHERE user=:username";
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
@@ -29,8 +29,9 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['first_name'], $row['last_name'], $row['phone'], $row['company']);
+        $user = new User($row['user'], $row['email'], $row['pass'], $row['first_name'], $row['last_name'], $row['phone'], $row['company']);
         $user->setUserId($row['id']);
+        $user->setEmail($row['email']);
         $user->setFirstName($row['first_name']);
         $user->setLastName($row['last_name']);
         $user->setPhone($row['phone']);
@@ -104,7 +105,7 @@ class UserRepository
     public function saveNewUser(User $user)
     {
         $query = sprintf(
-            self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getFirstName(), $user->getLastName(), $user->getPhone(), $user->getCompany(), $user->isAdmin()
+            self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getFirstName(), $user->getLastName(), $user->getPhone(), $user->getEmail(), $user->getCompany(), $user->isAdmin()
         );
 
         return $this->pdo->exec($query);
