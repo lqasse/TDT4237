@@ -18,13 +18,21 @@ class PatentsController extends Controller
 
     public function index()
     {
-        $patent = $this->patentRepository->all();
-        if($patent != null)
-        {
-            $patent->sortByDate();
-        }
+
+      if ($this->auth->check()) {
+            $patent = $this->patentRepository->all();
+            if($patent != null)
+            {
+              $patent->sortByDate();
+            }
         $users = $this->userRepository->all();
         $this->render('patents/index.twig', ['patent' => $patent, 'users' => $users]);
+      } else {
+
+          $this->app->flash('error', "You need to be logged in to view patents");
+          $this->app->redirect("/");
+      }
+
     }
 
     public function search()
@@ -42,6 +50,8 @@ class PatentsController extends Controller
 
     public function show($patentId)
     {
+
+
         $patent = $this->patentRepository->find($patentId);
         $username = $_SESSION['user'];
         $user = $this->userRepository->findByUser($username);
