@@ -2,7 +2,6 @@
 
 namespace tdt4237\webapp\controllers;
 
-use tdt4237\webapp\repository\UserRepository;
 
 class SessionsController extends Controller
 {
@@ -26,7 +25,7 @@ class SessionsController extends Controller
     }
 
     public function create()
-    {   
+    {
         //HERE!
         $clientIp = $this->get_client_ip();
         $q2 = 'SELECT COUNT (LoginId) log FROM Logins WHERE ip = "'.$clientIp.'" AND time > datetime("now","-5 minutes");';
@@ -48,7 +47,7 @@ class SessionsController extends Controller
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
             setcookie("user", $user);
-            setcookie("password",  $pass);
+            setcookie("password", $pass);
             $isAdmin = $this->auth->user()->isAdmin();
 
             if ($isAdmin) {
@@ -61,9 +60,21 @@ class SessionsController extends Controller
             $this->app->redirect('/');
             return;
         }
-        $this->invalidLogin();
-        $this->app->flashNow('error', 'Incorrect user/pass combination.');
-        $this->render('sessions/new.twig', []);
+        if (isset($_POST['submit'])) {
+            $this->invalidLogin();
+            $this->app->flashNow('error', 'Incorrect user/pass combination.');
+            $this->render('sessions/new.twig', []);
+        } else if (isset($_POST['reset'])) {
+            $this->render('sessions/reset.twig', []);
+        } else {
+            if (!empty($email)) {
+                $this->app->flashNow('info', 'We have sent an email to your address with instructions to reset your password');
+                $this->render('sessions/reset.twig', []);
+            } else {
+                $this->app->flashNow('error', 'Please enter you email address');
+                $this->render('sessions/reset.twig', []);
+            }
+        }
     }
 
     //And here
@@ -72,7 +83,7 @@ class SessionsController extends Controller
         $q1 = 'INSERT INTO logins(ip) VALUES("'.$ipaddress.'");';
         self::$pdo->exec($q1);
     }
-        
+
 
     //AND HERE
     public function get_client_ip() {
@@ -97,7 +108,7 @@ class SessionsController extends Controller
     public function destroy()
     {
         $this->auth->logout();
-        $this->app->redirect('http://www.ntnu.no/');
+        $this->app->redirect('/');
     }
 }
 try {

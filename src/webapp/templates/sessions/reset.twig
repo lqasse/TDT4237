@@ -1,0 +1,26 @@
+{% extends 'layouts/promotional.twig' %}
+
+{% block content %}
+    <h2>Reset password</h2>
+
+    {% if flash.error %}
+        <div class="ui error message">
+            {{ flash.error }}
+        </div>
+    {% endif %}
+
+    {% if flash.success %}
+        <div class="ui success message">
+            {{ flash.success|raw }}
+        </div>
+    {% endif %}
+
+    <form action="" method="post" class="ui form">
+        <div class="field">
+            <label>Email</label>
+            <input type="email" name="email">
+        </div>
+
+        <input type="submit" name="reset2" value="Reset password" class="blue ui button">
+    </form>
+{% endblock %}

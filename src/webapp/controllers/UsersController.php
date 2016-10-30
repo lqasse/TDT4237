@@ -59,19 +59,21 @@ class UsersController extends Controller
     {
         $request  = $this->app->request;
         $username = $request->post('user');
+        $email = $request->post('email');
         $password = $request->post('pass');
+        $confirm_password = $request->post('confirm_pass');
         $firstName = $request->post('first_name');
         $lastName = $request->post('last_name');
         $phone = $request->post('phone');
         $company = $request->post('company');
 
 
-        $validation = new RegistrationFormValidation($username, $password, $firstName, $lastName, $phone, $company);
+        $validation = new RegistrationFormValidation($username, $email, $password, $confirm_password, $firstName, $lastName, $phone, $company);
 
         if ($validation->isGoodToGo()) {
             $password = $password;
             $password = $this->hash->make($password);
-            $user = new User($username, $password, $firstName, $lastName, $phone, $company);
+            $user = new User($username, $email, $password, $firstName, $lastName, $phone, $company);
             $this->userRepository->save($user);
 
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');
